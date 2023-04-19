@@ -9,20 +9,17 @@
 
 </head>
 <body>
-
-
-
-    
-    <a href="{{route('user')}}"><button type="button" class="btn btn-success">Add</button>
+    <div class="container">
+    <a href="{{route('user')}}" ><button class="btn btn-primary" style="position: relative;left: 1000px">Add</button>
     </a>
 
     {{-- msg --}}
     @if (session()->has('msg'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-datadismissiable">
       {{session()->get('msg')}}
-      <a href="" class="close" data-dismiss="alert" aria-label="close">X</a>        
+      <a href="" class="close" data-dismiss="alert" aria-label="close">x</a>        
     </div>
-@endif
+    @endif
 
 
 {{-- table --}}
@@ -36,8 +33,10 @@
             {{-- <th scope="col">Password</th> --}}
             <th scope="col">Email</th>
             <th scope="col">Mobile No</th>
-            <th scope="col">Country</th>
             <th scope="col">Address</th>
+            <th scope="col">Country</th>
+            <th scope="col">State</th>
+            <th scope="col">City</th>
             <th scope="col">Action</th>
           </tr>
         </thead>
@@ -50,8 +49,10 @@
             {{-- <td>{{$d->password}}</td> --}}
             <td>{{$d->email}}</td>
             <td>{{$d->mobileno}}</td>
-            <td>{{$d->country}}</td>
             <td>{{$d->address}}</td>
+            <td>{{$d->country->name}}</td>
+            <td>{{$d->state->name}}</td>
+            <td>{{$d->city->name}}</td>
             <td><a href="{{route('edit',$d->id)}}"><button type="button" class="btn btn-warning">edit</button>
             </a>
             <a href="{{route('delete',$d->id)}}"><button type="button" class="btn btn-danger">delete</button></a>
@@ -62,6 +63,6 @@
 
         </tbody>
       </table>
-    
+    </div>
 </body>
 </html>

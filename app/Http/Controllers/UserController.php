@@ -11,17 +11,18 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-   public function user(){
-    return view('user');
-   }
+//    public function user(){
+//     return view('user');
+//    }
+
     public function store(Request $request){
         $validated = $request->validate([
             'name' => 'required|regex:/^[a-zA-Z\s\-]+$/u|max:255',
-            'pass' => 'required',
+            'pass' => 'required|min:5|max:18',
             'email' => 'required',
-            'mobileno' => 'required',
+            'mobileno' => 'required|numeric',
             'address' => 'required',
-            'country' => 'required',
+            // 'country_id'=>'required'
         ]
     );
         $data=new User();
@@ -31,14 +32,15 @@ class UserController extends Controller
         $data->mobileno=$request->mobileno;
         $data->address=$request->address;
         $data->country_id=$request->country_id;
-        $data->state=$request->state;
+        $data->state_id=$request->state_id;
         $data->city_id=$request->city_id;
 
          $data->save();
          return redirect()->route('table')->with('msg','Data has store successfully');;
     }
     public function table(){
-        $data=User::all();
+        $data=User::with('country')->get();
+        // dd($data);
         return view('table',compact('data'));
     }
     
@@ -63,9 +65,9 @@ class UserController extends Controller
         $data->email=$request->email;
         $data->mobileno=$request->mobileno;
         $data->address=$request->address;
-        $data->country=$request->country;
-
-
+        $data->country_id=$request->country_id;
+        $data->state_id=$request->state_id;
+        $data->city_id=$request->city_id;
         $data->save();
         return redirect()->route('table')->with('msg','Data has update successfully');;
 
@@ -85,6 +87,8 @@ class UserController extends Controller
         //  dd($countries);
          return view('user', compact('countries'));
      }
+
+   
      /**
       * Write code on Method
       *
@@ -92,6 +96,7 @@ class UserController extends Controller
       */
      public function fetchState(Request $request)
      {
+       
          $data['states'] = State::where("country_id", $request->country_id)
                                  ->get(["name", "id"]);
    

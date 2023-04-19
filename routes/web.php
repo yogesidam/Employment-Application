@@ -29,6 +29,6 @@ Route::get('delete/{id}',[UserController::class,'delete'])->name('delete');
 
 
 
-Route::get('dropdown', [UserController::class, 'index']);
+// Route::get('dropdown', [UserController::class, 'index1']);
 Route::post('api/fetch-states', [UserController::class, 'fetchState']);
 Route::post('api/fetch-cities', [UserController::class, 'fetchCity']);

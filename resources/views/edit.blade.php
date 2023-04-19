@@ -42,21 +42,22 @@
 
           </div>
 
-          <div class="form-group">
-            <label for="exampleInputmobileno">Country:</label>
-            {{-- <input type="text" class="form-control" id="exampleInputcountry" placeholder="Enter Country" name="country" value="{{old('country')}}"> --}}
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Country
-              </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">India</a>
-                <a class="dropdown-item" href="#">Canada</a>
-                <a class="dropdown-item" href="#">Iran</a>
-                <a class="dropdown-item" href="#">America</a>
+         {{--  country-state-city field  --}}
 
-              </div>
-            </div>
+          <div class="form-group">
+           <select name="country_id" id="country-dd" class="form-control">
+            <option value="">Select Country</option>
+            @foreach ($countries as $data)
+            <option value="{{$data->id}}">{{$data->name}}</option>
+            @endforeach
+           </select>
+          </div>
+          <div class="form-group">
+            <select id="state-dd" class="form-control" name="state_id"></select>
+          </div>
+          <div class="form-group">
+            <select id="city-dd" class="form-control" name="city_id"></select>
+          </div>
           
 
         <div class="form-group">
@@ -70,5 +71,66 @@
         <button type="submit" class="btn btn-primary">update</button>
     </div>
       </form>
+
+      {{-- ajex method /script --}}
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script>
+        $(document).ready(function () {
+  
+            /*------------------------------------------
+            --------------------------------------------
+            Country Dropdown Change Event
+            --------------------------------------------
+            --------------------------------------------*/
+            $('#country-dd').on('change', function () {
+                var idCountry = this.value;
+                $("#state-dd").html('');
+                $.ajax({
+                    url: "{{url('api/fetch-states')}}",
+                    type: "POST",
+                    data: {
+                        country_id: idCountry,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#state-dd').html('<option value="">-- Select State --</option>');
+                        $.each(result.states, function (key, value) {
+                            $("#state-dd").append('<option value="' + value
+                                .id + '">' + value.name + '</option>');
+                        });
+                        $('#city-dd').html('<option value="">-- Select City --</option>');
+                    }
+                });
+            });
+  
+            /*------------------------------------------
+            --------------------------------------------
+            State Dropdown Change Event
+            --------------------------------------------
+            --------------------------------------------*/
+            $('#state-dd').on('change', function () {
+                var idState = this.value;
+                $("#city-dd").html('');
+                $.ajax({
+                    url: "{{url('api/fetch-cities')}}",
+                    type: "POST",
+                    data: {
+                        state_id: idState,
+                        _token: '{{csrf_token()}}'
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        $('#city-dd').html('<option value="">-- Select City --</option>');
+                        $.each(res.cities, function (key, value) {
+                            $("#city-dd").append('<option value="' + value
+                                .id + '">' + value.name + '</option>');
+                        });
+                    }
+                });
+            });
+  
+        });
+    </script>
 </body>
 </html>
